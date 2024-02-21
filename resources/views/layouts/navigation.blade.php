@@ -19,6 +19,9 @@
                     <x-nav-link :href="route('status.nginx')" :active="request()->routeIs('status.nginx')">
                         {{ __('Monitoring') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('admin.sys')" :active="request()->routeIs('admin.sys')">
+                        {{ __('Administration') }}
+                    </x-nav-link>
                 </div>
             </div>
 

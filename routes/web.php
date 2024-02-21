@@ -18,7 +18,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Here, you can define additional routes for specific dashboard sections like Nginx status
     // For example, to keep the Nginx status page accessible as a separate route:
-    Route::get('/status/nginx', [NginxStatusController::class, 'dashboard'])->name('status.nginx');
+    Route::get('/status/nginx', [NginxStatusController::class, 'status'])->name('status.nginx');
+    Route::get('/admin/sys', [NginxStatusController::class, 'status'])->name('admin.sys');
+    Route::get('/admin/properties', [NginxStatusController::class, 'status'])->name('admin.properties');
 
     // Add routes for other statuses or functionalities as needed
 });

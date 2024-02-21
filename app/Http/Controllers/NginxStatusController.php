@@ -1,39 +1,51 @@
 <?php
 
-// app/Http/Controllers/NginxStatusController.php
-
 namespace App\Http\Controllers;
 
 use App\Models\NginxStatus;
-use App\Models\VisualVM;
 use GuzzleHttp\Client;
-use App\Models\Database; // Adjust this to your actual model name if different
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class NginxStatusController extends Controller
 {
-
-    public function dashboard()
+    public function status(Request $request): View
     {
-        $nginxStatuses = NginxStatus::all();
-        $visualVMs = VisualVM::all();
-        $databases = Database::all(); // Ensure this matches your actual Database model
+        try {
+            // Set your credentials
+            $username = 'root';
+            $password = '123';
 
-        return view('status', compact('nginxStatuses', 'visualVMs', 'databases'));
-    }
-    public function status()
-    {
-        $client = new Client();
-        $response = $client->request('GET', 'http://your-nginx-server/status/format/json');
-        $statusCode = $response->getStatusCode();
-        $content = $response->getBody();
+            // Create a Guzzle client with SSL verification disabled
+            $client = new Client([
+                'headers' => [
+                    'Authorization' => 'Basic ' . base64_encode("$username:$password"),
+                ],
+                'verify' => false, // Enable SSL verification
+            ]);
 
-        if($statusCode == 200) {
-            $nginxStatuses = json_decode($content, true);
-        } else {
-            $nginxStatuses = [];
+            // Make the HTTP request
+            $response = $client->request('GET', 'https://erp.unitel.mn/status/format/json');
+
+            // Get the HTTP status code and response content
+            $statusCode = $response->getStatusCode();
+            $content = $response->getBody()->getContents();
+
+            // Handle successful response (HTTP status code 200)
+            if ($statusCode == 200) {
+                // Pass the raw response to the view
+                return view('status', ['rawResponse' => $content]);
+            } else {
+                // Handle non-200 HTTP status code
+                $nginxStatuses = ['error' => 'HTTP Request failed with status code ' . $statusCode];
+
+                return view('status', ['error' => $nginxStatuses]);
+            }
+        } catch (\Exception $e) {
+            // Handle exceptions
+            $errorMessage = $e->getMessage();
+
+            return view('status', ['error' => $errorMessage]);
         }
-
-        // Assuming you're also fetching $visualVMs and $databases similarly
-        return view('status_dashboard', compact('nginxStatuses', 'visualVMs', 'databases'));
     }
 }
