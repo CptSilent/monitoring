@@ -28,13 +28,16 @@ class NginxStatusController extends Controller
             $response = $client->request('GET', 'https://erp.unitel.mn/status/format/json');
 
             // Get the HTTP status code and response content
+          
             $statusCode = $response->getStatusCode();
             $content = $response->getBody()->getContents();
-
+            $contentT= json_encode(json_decode($content, true));
+            //   var_dump($contentT);
+            // $serverZones = $response->
             // Handle successful response (HTTP status code 200)
             if ($statusCode == 200) {
                 // Pass the raw response to the view
-                return view('status', ['rawResponse' => $content]);
+                return view('status', ['rawResponse' => $contentT]);
             } else {
                 // Handle non-200 HTTP status code
                 $nginxStatuses = ['error' => 'HTTP Request failed with status code ' . $statusCode];
