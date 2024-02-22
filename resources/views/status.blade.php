@@ -23,9 +23,6 @@
     <div class="tab-content">
         <div id="nginx" class="container tab-pane active"><br>
             <h3>Nginx Status</h3>
-            <div id="chart"></div>
-            <div id="chart1"></div>
-            <div id="chart2"></div>
             @if(isset($error))
             <p>Error: {{ $error }}</p>
             @elseif(isset($rawResponse))
@@ -50,9 +47,6 @@
         </div>
         <div id="visualvm" class="container tab-pane fade"><br>
             <h3>VisualVM Status</h3>
-            <div id="chart"></div>
-            <div id="chart1"></div>
-            <div id="chart2"></div>
             <!-- VisualVM status content goes here -->
         </div>
     </div>
